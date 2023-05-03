@@ -36,14 +36,13 @@ contract SimpleDefi{
     }
 
     function withdrawMoney(uint _amount) public {
-        if(_amount <= balances[msg.sender].totalBalance){
-            balances[msg.sender].totalBalance -= _amount;
-            Transaction memory withdrawals = Transaction(_amount, block.timestamp);
-            balances[msg.sender].withdrawals[balances[msg.sender].numWithdrawals] = withdrawals;
-            balances[msg.sender].numWithdrawals++;
-            address payable to = payable(msg.sender);
-            to.transfer(_amount);
-        }   
+        require(_amount <= balances[msg.sender].totalBalance, "Not enough funds");
+        balances[msg.sender].totalBalance -= _amount;
+        Transaction memory withdrawals = Transaction(_amount, block.timestamp);
+        balances[msg.sender].withdrawals[balances[msg.sender].numWithdrawals] = withdrawals;
+        balances[msg.sender].numWithdrawals++;
+        address payable to = payable(msg.sender);
+        to.transfer(_amount);
     }
 
     function withdrawAll() public {
@@ -61,12 +60,11 @@ contract SimpleDefi{
     }
 
     function transferToAddress(address payable _to, uint _amount) public {
-        if(_amount <= balances[msg.sender].totalBalance){
-            balances[msg.sender].totalBalance -= _amount;
-            Transaction memory withdrawals = Transaction(_amount, block.timestamp);
-            balances[msg.sender].withdrawals[balances[msg.sender].numWithdrawals] = withdrawals;
-            balances[msg.sender].numWithdrawals++;
-            _to.transfer(_amount);
-        } 
+        require(_amount <= balances[msg.sender].totalBalance, "Not enough funds");
+        balances[msg.sender].totalBalance -= _amount;
+        Transaction memory withdrawals = Transaction(_amount, block.timestamp);
+        balances[msg.sender].withdrawals[balances[msg.sender].numWithdrawals] = withdrawals;
+        balances[msg.sender].numWithdrawals++;
+        _to.transfer(_amount);
     }
 }
